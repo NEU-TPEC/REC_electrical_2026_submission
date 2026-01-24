@@ -24,7 +24,7 @@
     | --- | --- |
     | GPIOXX | Stop Button Input |
 
-- Reset: 
+- Soft Reset: 
 
     Resets the ride into the starting position
 
