@@ -12,17 +12,35 @@
 
     Starts the ride given all the safety checks are valid
 
+    | PICO GPIO Pin | Purpose |
+    | --- | --- |
+    | GPIOXX | Start Button Input |
+
 - Ride Stop: 
 
     Stops the ride
+
+    | PICO GPIO Pin | Purpose |
+    | --- | --- |
+    | GPIOXX | Stop Button Input |
 
 - Reset: 
 
     Resets the ride into the starting position
 
+    | PICO GPIO Pin | Purpose |
+    | --- | --- |
+    | GPIOXX | Reset Button Input |
+
 - Operator Tag:
 
     RFID operator tags to verify the operator
+
+    (this is assuming I2C for the RFID reader)
+    | PICO GPIO Pin | Purpose |
+    | --- | --- |
+    | GPIOXX |  IC2 Data |
+    | GPIOXX |  IC2 Clock |
 
 
 
@@ -32,9 +50,17 @@
 
     A manual safety check for the ride restraints
 
+    | PICO GPIO Pin | Purpose |
+    | --- | --- |
+    | GPIOXX |  Restraint Button Input |
+
 - Tilt Switch:
 
     A safety check which verifies the state of the lifting mechanism
+
+    | PICO GPIO Pin | Purpose |
+    | --- | --- |
+    | GPIOXX |  Tilt Switch Input |
 
 
 
@@ -46,13 +72,26 @@
 
     LED indicating the status of the restraints on the ride
 
+    | PICO GPIO Pin | Purpose |
+    | --- | --- |
+    | GPIOXX |  Restraint LED Output |
+
 - Loading State Check:
 
     LED indicating the Loading State of the ride
 
+    | PICO GPIO Pin | Purpose |
+    | --- | --- |
+    | GPIOXX |  Loading LED Output |
+
 - LCD:
 
     LCD which displays more advanced ride status information
+
+    | PICO GPIO Pin | Purpose |
+    | --- | --- |
+    | GPIOXX |  I2C Data |
+    | GPIOXX |  I2C Clock |
 
 
 
@@ -62,9 +101,19 @@
 
     The device that actually controls the state of the motors
 
+    | PICO GPIO Pin | Purpose |
+    | --- | --- |
+    | GPIOXX | Something |
+    
+
 - Breaks (solenoids?):
 
     These are primarily controlled by the E-Stop however these could be connected to both the E-Stop and the controller
+
+    | PICO GPIO Pin | Purpose |
+    | --- | --- |
+    | GPIOXX | MOSFET to connect / disconnect power to Solenoid #1 |
+    | GPIOXX | MOSFET to connect / disconnect power to Solenoid #2 |
 
 
 
