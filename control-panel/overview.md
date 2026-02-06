@@ -2,6 +2,10 @@
 
 # Overview of the REC 2026 Controls/Control Panel Code
 
+## Battery Power
+
+Make sure to connect the battery to the VSYS pin on the pico (PIN 39 silkscreen on front) through a pfet with the gate pin connected to vbus, this gets disconnected when the pico is plugged in through USB so that the supplies don't compete.
+
 ## Theory of Operation
 
 ### Inputs:
@@ -15,6 +19,7 @@
     | PICO GPIO Pin | Purpose |
     | --- | --- |
     | GPIOXX | Start Button Input |
+    | GPIOXX | Start Button LED |
 
 - Ride Stop: 
 
@@ -23,6 +28,7 @@
     | PICO GPIO Pin | Purpose |
     | --- | --- |
     | GPIOXX | Stop Button Input |
+    | GPIOXX | Stop Button LED |
 
 - Soft Reset: 
 
@@ -31,6 +37,7 @@
     | PICO GPIO Pin | Purpose |
     | --- | --- |
     | GPIOXX | Reset Button Input |
+    | GPIOXX | Reset Button LED |
 
 - Operator Tag:
 
@@ -46,7 +53,7 @@
 
 #### Safety Checks:
 
-- Operator Restraint Check:
+- Operator Restraint Check: (button)
 
     A manual safety check for the ride restraints
 
@@ -61,6 +68,9 @@
     | PICO GPIO Pin | Purpose |
     | --- | --- |
     | GPIOXX |  Tilt Switch Input |
+
+- ToF Sensor:
+
 
 
 
@@ -104,16 +114,6 @@
     | PICO GPIO Pin | Purpose |
     | --- | --- |
     | GPIOXX | Something |
-    
-
-- Breaks (solenoids?):
-
-    These are primarily controlled by the E-Stop however these could be connected to both the E-Stop and the controller
-
-    | PICO GPIO Pin | Purpose |
-    | --- | --- |
-    | GPIOXX | MOSFET to connect / disconnect power to Solenoid #1 |
-    | GPIOXX | MOSFET to connect / disconnect power to Solenoid #2 |
 
 
 
@@ -152,7 +152,7 @@ These states are recoverable
 
 - `Moving with Open Restraints`:
 
-    (Not that his is dependant on there being a non-manual restraint safety check)
+    (Note that this is dependant on there being a non-manual restraint safety check)
 
     The tilt sensor indicates the ride is lifted but the restraints are not closed. -> Motors should be stopped and the riders need to safely removed, either emergency services or lowering the ride to the (un)loaded position.
 
