@@ -104,10 +104,12 @@ Make sure to connect the battery to the VSYS pin on the pico (PIN 39 silkscreen 
 
     LCD which displays more advanced ride status information
 
+    The LCD VCC pin must be connected to 5V
+
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIOXX |  I2C Data |
-    | GPIOXX |  I2C Clock |
+    | GPIO18 |  I2C Data |
+    | GPIO19 |  I2C Clock |
 
 
 
@@ -127,7 +129,9 @@ Make sure to connect the battery to the VSYS pin on the pico (PIN 39 silkscreen 
 
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIOXX | Something |
+    | GPIO2 | Pulse |
+    | GPIO3 | Enable |
+    | GPIO4 | Direction |
 
 
 
