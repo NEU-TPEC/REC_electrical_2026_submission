@@ -1,7 +1,5 @@
-from machine import Pin, I2C, PWM
+from machine import Pin, PWM
 from utime import sleep
-# from enum import Enum
-from DIYables_MicroPython_LCD_I2C import LCD_I2C
 
 ride_pulse = Pin(1, Pin.OUT, value=0)
 ride_direction = Pin(0, Pin.OUT, value=0)
