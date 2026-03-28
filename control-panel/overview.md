@@ -18,8 +18,8 @@ Make sure to connect the battery to the VSYS pin on the pico (PIN 39 silkscreen 
 
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIOXX | Start Button |
-    | GPIOXX | Start Button LED |
+    | GPIO12 | Start Button |
+    | GPIO15 | Start Button LED |
 
 - Ride Stop: 
 
@@ -27,8 +27,8 @@ Make sure to connect the battery to the VSYS pin on the pico (PIN 39 silkscreen 
 
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIOXX | Stop Button |
-    | GPIOXX | Stop Button LED |
+    | GPIO11 | Stop Button |
+    | GPIO14 | Stop Button LED |
 
 - Soft Reset: 
 
@@ -36,8 +36,8 @@ Make sure to connect the battery to the VSYS pin on the pico (PIN 39 silkscreen 
 
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIOXX | Reset Button |
-    | GPIOXX | Reset Button LED |
+    | GPIO10 | Reset Button |
+    | GPIO13 | Reset Button LED |
 
 - Operator Tag:
 
@@ -46,8 +46,10 @@ Make sure to connect the battery to the VSYS pin on the pico (PIN 39 silkscreen 
     (this is assuming I2C for the RFID reader)
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIOXX |  IC2 Data |
-    | GPIOXX |  IC2 Clock |
+    | GPIO6 |  SDA  |
+    | GPIO7 |  SCK  |
+    | GPIO8 |  MOSI |
+    | GPIO9 |  MISO |
 
 
 
@@ -59,15 +61,16 @@ Make sure to connect the battery to the VSYS pin on the pico (PIN 39 silkscreen 
 
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIOXX |  Restraint Button |
-
+    | GPIO19 | Restraint Button |
+    | GPIO18 | Restraint button light |
+ 
 - Tilt Switch:
 
     A safety check which verifies the state of the lifting mechanism
 
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIOXX |  Tilt Switch Output |
+    | GPIO22 |  Tilt Switch Output |
 
 - ToF Sensor:
 
@@ -90,7 +93,7 @@ Make sure to connect the battery to the VSYS pin on the pico (PIN 39 silkscreen 
 
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIOXX |  Restraint LED Output |
+    | GPIO16 |  Restraint LED Output |
 
 - Loading State Check:
 
@@ -98,40 +101,79 @@ Make sure to connect the battery to the VSYS pin on the pico (PIN 39 silkscreen 
 
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIOXX |  Loading LED Output |
+    | GPIO17 |  Loading LED Output |
 
 - LCD:
 
     LCD which displays more advanced ride status information
 
-    The LCD VCC pin must be connected to 5V
+    The LCD VCC pin must be connected` to 5V
 
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIO18 |  I2C Data |
-    | GPIO19 |  I2C Clock |
+    | GPIO27 |  SDA |
+    | GPIO26 |  SCL |
 
 
 
 #### Ride Control:
 
-- Actuator Motor Controllers:
+- Frame Motor Controller (x1):
 
     The device that actually controls the state of the motors
 
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIOXX | Something |
+    | GPIO0 | Pulse |
+    | GPIO1 | Direction |
 
-- Frame Motor Controllers:
+- Actuator Motor Controllers (x2):
 
     The device that actually controls the state of the motors
 
     | PICO GPIO Pin | Purpose |
     | --- | --- |
-    | GPIO2 | Pulse |
-    | GPIO3 | Enable |
-    | GPIO4 | Direction |
+    | GPIO2 | Pulse1 |
+    | GPIO3 | Direction1 |
+    | GPIO4 | Pulse2 |
+    | GPIO5 | Direction2 |
+
+### Full GPIO Pins ###
+    | Pico Pin | Purpose     | Middle   | Purpose       | Pico Pin  | Extra             |
+    | ---      |       ---   | ---      | ---           | ---       | ---               |
+    | GP0      | Frame Pulse |          |               | VBUS      |                   |
+    | GP1      | Frame Dir   |          |               | VSYS      |                   |
+    | GND      |             |          |               | GND       |                   |
+    | GP2      | Lin 1 Pulse |          |               | 3V3_EN    |                   |
+    | GP3      | Lin 1 DIR   |          |               | 3V3 (OUT) |Tilt, LCD, Estop pwr|
+    | GP4      | Lin 2 Pulse |          |               | ADC_VREF  |                   |
+    | GP5      | Lin 2 DIR   |          | EStop Input   | GP28      |                   |
+    | GND      |             |          |               | GND       | LCD GND/Estop GND |
+    | GP6      | RFID SCL    |          | LCD SDA       | GP27      |                   |
+    | GP7      | RFID SDA    |          | LCD SCL       | GP26      |                   |
+    | GP8      | Limit 1     |          |               | RUN       |                   |
+    | GP9      | Limit 2     |          | Tilt Sensor   | GP22      |                   |
+    | GND      |             |          |               | GND       | Tilt GND          |
+    | GP10     | Reset But   |          | Limit 3       | GP21      |                   |
+    | GP11     | Stop But    |          | Limit 4       | GP20      |                   |
+    | GP12     | Start But   |          | Restr. ButLED | GP19      |                   |
+    | GP13     | Reset LED   |          | Restraint But | GP18      |                   |
+    | GND      |             |          |               | GND       | LED GND           |
+    | G14      | Stop LED    |          | Loading LED   | GP17      |                   |
+    | G15      | Start LED   |          | Restraint LED | GP16      |                   |
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
