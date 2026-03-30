@@ -1,17 +1,17 @@
 from machine import Pin, PWM
 from utime import sleep
 
-ride_pulse = Pin(1, Pin.OUT, value=0)
-ride_direction = Pin(0, Pin.OUT, value=0)
+ride_pulse = Pin(4, Pin.OUT, value=0)
+ride_direction = Pin(5, Pin.OUT, value=1)
 ride_motor = PWM(ride_pulse)
 FRAME_USTEPS = 6400
 
-frame1_pulse = Pin(3, Pin.OUT, value=0)
-frame1_direction = Pin(2, Pin.OUT, value=0)
+frame1_pulse = Pin(1, Pin.OUT, value=0)
+frame1_direction = Pin(0, Pin.OUT, value=0)
 frame1_motor = PWM(frame1_pulse)
 
-frame2_pulse = Pin(5, Pin.OUT, value=0)
-frame2_direction = Pin(4, Pin.OUT, value=0)
+frame2_pulse = Pin(3, Pin.OUT, value=0)
+frame2_direction = Pin(2, Pin.OUT, value=0)
 frame2_motor = PWM(frame2_pulse)
 
 
@@ -51,8 +51,8 @@ freq = [(0, 0.00), (1, 0.0034), (2, 0.014), (3, 0.031), (4, 0.055), (5, 0.078), 
 
 if __name__ == "__main__":
 
-    # frame motor 1 positive down
-    # frame motor 2 positive down
+    # frame motor 1 positive up
+    # frame motor 2 positive up
 
     # Measured roughly 1(ish) revolution of frame motor is approx 1" in movement
     # therefore
@@ -63,29 +63,29 @@ if __name__ == "__main__":
 
     # ride up
 
-    set_ride_speed(frame1_motor, frame1_direction, -0.5)
-    set_ride_speed(frame2_motor, frame2_direction, -0.5)
-    sleep(6)
-    set_ride_speed(frame1_motor, frame1_direction, 0)
-    set_ride_speed(frame2_motor, frame2_direction, 0)
+    # set_ride_speed(frame1_motor, frame1_direction, 1)
+    # set_ride_speed(frame2_motor, frame2_direction, 1)
+    # sleep(3)
+    # set_ride_speed(frame1_motor, frame1_direction, 0)
+    # set_ride_speed(frame2_motor, frame2_direction, 0)
 
-    sleep(1)
+    # sleep(1)
 
     # run ride
 
     for t, f in freq:
-        set_ride_speed(ride_motor, ride_direction, f*2) # double frequency due to pulley ratio
+        set_ride_speed(ride_motor, ride_direction, f*12/5) # double frequency due to pulley ratio
         print(f"{f}")
         sleep(1/10) # sampled at tenth of second
 
-    sleep(1)
+    # sleep(1)
 
     # ride down
 
-    set_ride_speed(frame1_motor, frame1_direction, 0.5)
-    set_ride_speed(frame2_motor, frame2_direction, 0.5)
-    sleep(6)
-    set_ride_speed(frame1_motor, frame1_direction, 0)
-    set_ride_speed(frame2_motor, frame2_direction, 0)
+    # set_ride_speed(frame1_motor, frame1_direction, -0.5)
+    # set_ride_speed(frame2_motor, frame2_direction, -0.5)
+    # sleep(6)
+    # set_ride_speed(frame1_motor, frame1_direction, 0)
+    # set_ride_speed(frame2_motor, frame2_direction, 0)
 
 
