@@ -141,13 +141,13 @@ Make sure to connect the battery to the VSYS pin on the pico (PIN 39 silkscreen 
 ### Full GPIO Pins ###
     | Pico Pin | Purpose     | Middle   | Purpose       | Pico Pin  | Extra             |
     | ---      |       ---   | ---      | ---           | ---       | ---               |
-    | GP0      | Frame Pulse |          |               | VBUS      |                   |
-    | GP1      | Frame Dir   |          |               | VSYS      |                   |
+    | GP0      | Frame DIR   |          | VBUS          |           |                   |
+    | GP1      | Frame PULSE |          |               | VSYS      |                   |
     | GND      |             |          |               | GND       |                   |
-    | GP2      | Lin 1 Pulse |          |               | 3V3_EN    |                   |
-    | GP3      | Lin 1 DIR   |          |               | 3V3 (OUT) |Tilt, LCD, Estop pwr|
-    | GP4      | Lin 2 Pulse |          |               | ADC_VREF  |                   |
-    | GP5      | Lin 2 DIR   |          | EStop Input   | GP28      |                   |
+    | GP2      | Lin 1 DIR   |          |               | 3V3_EN    |                   |
+    | GP3      | Lin 1 PULSE |          |               | 3V3 (OUT) |Tilt, LCD, Estop pwr|
+    | GP4      | Lin 2 DIR   |          |               | ADC_VREF  |                   |
+    | GP5      | Lin 2 PULSE |          | EStop Input   | GP28      |                   |
     | GND      |             |          |               | GND       | LCD GND/Estop GND |
     | GP6      | RFID SCL    |          | LCD SDA       | GP27      |                   |
     | GP7      | RFID SDA    |          | LCD SCL       | GP26      |                   |

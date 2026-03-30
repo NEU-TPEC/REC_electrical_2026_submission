@@ -1,6 +1,21 @@
 from machine import Pin, I2C, PWM
+import utime
 from utime import sleep, ticks_ms
 from DIYables_MicroPython_LCD_I2C import LCD_I2C
+from mfrc522 import MFRC522
+
+# LCD Setup
+
+lcd_comm = I2C(
+    1,              
+    scl=Pin(27),     
+    sda=Pin(26),     
+    )
+
+LCD_ADDR = 0x27
+LCD_ROWS = 2
+LCD_COLS = 16
+lcd = LCD_I2C(lcd_comm, LCD_ADDR, LCD_ROWS, LCD_COLS)
 
 
 
@@ -10,18 +25,38 @@ from DIYables_MicroPython_LCD_I2C import LCD_I2C
 ##                  ##
 ######################
 
-
-
 ## Control Buttons
 
-dispatch_button = Pin(12, Pin.IN)  
-ride_stop_button = Pin(11, Pin.IN) 
-soft_reset_button = Pin(10, Pin.IN) 
-estop_button = Pin(28, Pin.IN)
+dispatch_button = Pin(12, Pin.IN, Pin.PULL_UP)  
+ride_stop_button = Pin(11, Pin.IN, Pin.PULL_UP) 
+soft_reset_button = Pin(10, Pin.IN, Pin.PULL_UP) 
+estop_button = Pin(28, Pin.IN, Pin.PULL_UP)
+
 
 # Safety Checks
 
-operator_restraint_button = Pin(19, Pin.IN)  
+operator_restraint_button = Pin(19, Pin.IN, Pin.PULL_UP) 
+rfid_sda = machine.Pin(16)
+rfid_scl = machine.Pin(17)
+rfid_i2c = machine.I2C(0, sda=rifd_sda, scl=rfid_scl, freq=400000)
+RESTRAINTS_ENGAGED_BUTTON = False
+RFID_SCANNED = False
+RESTRAINTS_DOUBLE_ENGAGED = False 
+
+def toggle_restraints():
+    RESTRAINTS_ENGAGED_BUTTON = not RESTRAINTS_ENGAGED_BUTTON
+    start_time = utime.ticks_ms()
+    timeout_ms = timeout_sec * 1000
+    card_found = False
+
+
+
+
+    if RFID_SCANNED and RESTRAINTS_ENGAGED_BUTTON:
+        RESTRAINTS_DOUBLE_ENGAGED = True
+    restraint_indicator.value(RESTRAINTS_DOUBLE_ENGAGED)
+operator_restraint_button.irq(trigger=Pin.IRQ_FALLING, handler=toggle_restraints)
+
 
 tilt_sensor = Pin(22, Pin.IN)                
 
@@ -37,17 +72,6 @@ reset_button_led = Pin(13, Pin.OUT)
 operator_restraint_led = Pin(18, Pin.OUT)
 restraint_indicator = Pin(16, Pin.OUT)
 loading_state_indicator = Pin(17, Pin.OUT)
-
-lcd_comm = I2C(
-    1,              
-    scl=Pin(27),     
-    sda=Pin(26),     
-    )
-
-LCD_ADDR = 0x27
-LCD_ROWS = 2
-LCD_COLS = 16
-lcd = LCD_I2C(lcd_comm, LCD_ADDR, LCD_ROWS, LCD_COLS)
 
 
 #########################
@@ -131,11 +155,9 @@ def set_ride_speed(pwm:PWM, speed:float):
 
 
 
-
-
-def restraints_closed() -> bool:
+def restraints_closed() -> bool: 
     """Checks if the operator restraints are closed."""
-    return operator_restraint_button.value() == 1
+    return RESTRAINTS_ENGAGED_BUTTON
 
 def ride_lowered() -> bool:
     """Checks if the ride is in the lowered position."""
@@ -175,7 +197,14 @@ def check_safety(state) -> int:
     return state
 
 
+# Emergency stop
+state = RIDE_LOCKED
 
+ESTOP_PUSHED = False
+def emergency_stop():
+    ESTOP_PUSHED = True
+    state = E_STOP
+estop_button.irq(trigger=Pin.IRQ_FALLING, handler=emergency_stop)
 
 
 
@@ -237,13 +266,16 @@ freq = [(0, 0.00), (1, 0.0012), (2, 0.0049), (3, 0.012), (4, 0.020), (5, 0.031),
 #####################
 
 if __name__ == "__main__":
-
-    state = RIDE_LOCKED
     lift_start = 0
     lower_start = 0
     spin_index = 0
     lcd.clear()
     print(lcd_comm.scan())
+
+    state = RIDE_LOCKED
+    RESTRAINTS_ENGAGED_BUTTON = operator_restraint_button.value()
+    ESTOP_PUSHED = estop_button.value()
+    RFID_SCANNED = False
    
     while True:
         state = check_safety(state)
@@ -253,27 +285,33 @@ if __name__ == "__main__":
 
         ## State Regulator
         if state == RIDE_LOCKED:
+            lcd.print(f"Ride locked.")
             set_ride_speed(frame_motor, 0)
             if operator_restraint_button.value():
                 state = RESTRAINTS_OPEN
 
         elif state == RESTRAINTS_OPEN:
+            lcd.print(f"Restraints open.")
             if restraints_closed():
                 state = ALL_CLEAR
 
         elif state == ALL_CLEAR:
+            lcd.print(f"All clear!")
             if dispatch_pressed():
                 state = RIDE_STARTED
 
         elif state == RIDE_STARTED:
+            lcd.print(f"Starting ride...")
             if not restraints_closed():
                 state = ATTEMPTED_START_WITH_OPEN
+                lcd.print(f"Restraints open! Cannot begin ride.")
             else:
                 lift_start = ticks_ms()
                 state = RIDE_LIFTING
 
         elif state == RIDE_LIFTING:
             # set_ride_speed(frame_motor, 0.25) update with correct motors, should be actuators
+            lcd.print(f"Ride lifting.")
             if not restraints_closed():
                 state = MOVING_WITH_OPEN_RESTRAINTS
             elif ride_raised():
@@ -284,9 +322,11 @@ if __name__ == "__main__":
                 state = LIFT_FAILED
 
         elif state == RIDE_SPINNING: #Use rotation_limit functions
+            lcd.print(f"Ride running.")
             set_ride_speed(frame_motor, freq[spin_index][1])
             if not restraints_closed():
                 state = MOVING_WITH_OPEN_RESTRAINTS
+                
             elif rotation_limit1() or rotation_limit2():
                 state = RIDE_SLOWING
             else:
@@ -296,8 +336,3 @@ if __name__ == "__main__":
     # for t, f in freq:
     #     set_ride_speed(frame_motor, f)
     #     sleep(1/10)
-
-
-
-
-
