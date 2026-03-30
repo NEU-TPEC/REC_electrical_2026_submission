@@ -334,7 +334,10 @@ if __name__ == "__main__":
         
         elif state == E_STOP:
             lcd.print(f"E Stopped! Must reset ride.")
-            
+            while estop_button.value():
+                time.sleep_ms(10)
+            ESTOP_PUSHED = False
+            state = RIDE_LOCKED            
 
     # for t, f in freq:
     #     set_ride_speed(frame_motor, f)
