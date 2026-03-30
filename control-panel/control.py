@@ -40,21 +40,20 @@ rfid_sda = machine.Pin(16)
 rfid_scl = machine.Pin(17)
 rfid_i2c = machine.I2C(0, sda=rifd_sda, scl=rfid_scl, freq=400000)
 RESTRAINTS_ENGAGED_BUTTON = False
-RFID_SCANNED = False
-RESTRAINTS_DOUBLE_ENGAGED = False 
 
-def toggle_restraints():
-    RESTRAINTS_ENGAGED_BUTTON = not RESTRAINTS_ENGAGED_BUTTON
-    start_time = utime.ticks_ms()
-    timeout_ms = timeout_sec * 1000
-    card_found = False
-
-
-
-
-    if RFID_SCANNED and RESTRAINTS_ENGAGED_BUTTON:
-        RESTRAINTS_DOUBLE_ENGAGED = True
-    restraint_indicator.value(RESTRAINTS_DOUBLE_ENGAGED)
+def toggle_restraints():    
+    lcd.print(f"Scan operator tag to toggle restraints.")
+    timeout = 500 # 5 seconds to scan tag
+    while timeout > 0:
+        (stat, tag_type) = rfid_reader.request(rfid_reader.REQIDL)
+        if stat == rfid_reader.OK:
+            RESTRAINTS_ENGAGED_BUTTON = not RESTRAINTS_ENGAGED_BUTTON
+            restraint_status = "closed" if RESTRAINTS_ENGAGED_BUTTON else "open"
+            print(f"Restraints are {restraint_status}.")
+            return # Exit the function immediately
+        timeout -= 1
+        time.sleep_ms(10) 
+    lcd.print(f"No tag detected. Sequence cancelled.")
 operator_restraint_button.irq(trigger=Pin.IRQ_FALLING, handler=toggle_restraints)
 
 
@@ -332,6 +331,10 @@ if __name__ == "__main__":
             else:
                 spin_index = (spin_index + 1) % len(freq)
             sleep(1/10)
+        
+        elif state == E_STOP:
+            lcd.print(f"E Stopped! Must reset ride.")
+            
 
     # for t, f in freq:
     #     set_ride_speed(frame_motor, f)
